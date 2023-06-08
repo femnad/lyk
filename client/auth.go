@@ -2,24 +2,25 @@ package client
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
-	"github.com/femnad/lyk/config"
+	"io"
 	"log"
 	"net/http"
 	"os"
 	"path"
-	"strings"
 
 	"github.com/google/uuid"
 	"github.com/zmb3/spotify/v2"
 	"github.com/zmb3/spotify/v2/auth"
 	"golang.org/x/oauth2"
 
+	"github.com/femnad/lyk/config"
 	"github.com/femnad/mare"
 )
 
 const (
-	tokenFilePath = "~/.local/share/lyk/token"
+	tokenFilePath = "~/.local/share/lyk/token.json"
 )
 
 type authResult struct {
@@ -43,7 +44,14 @@ func generateState() string {
 	return uuid.New().String()
 }
 
-func saveToken(token string) error {
+func closeAndCheck(closer io.Closer) {
+	err := closer.Close()
+	if err != nil {
+		log.Fatalf("error closing token file %s, %v", tokenFile, err)
+	}
+}
+
+func saveToken(token oauth2.Token) error {
 	dir, _ := path.Split(tokenFile)
 	err := mare.EnsureDir(dir)
 	if err != nil {
@@ -54,15 +62,10 @@ func saveToken(token string) error {
 	if err != nil {
 		return err
 	}
-	defer func() {
-		cErr := f.Close()
-		if cErr != nil {
-			log.Fatalf("error closing token file %s, %v", tokenFile, cErr)
-		}
-	}()
+	defer closeAndCheck(f)
 
-	_, err = f.WriteString(fmt.Sprintf("%s\n", token))
-	return err
+	encoder := json.NewEncoder(f)
+	return encoder.Encode(token)
 }
 
 func hasSavedToken() (bool, error) {
@@ -79,13 +82,20 @@ func hasSavedToken() (bool, error) {
 }
 
 func clientFromSavedToken(ctx context.Context) (*spotify.Client, error) {
-	token, err := os.ReadFile(tokenFile)
+	f, err := os.Open(tokenFile)
 	if err != nil {
 		return &spotify.Client{}, err
 	}
-	oauthToken := oauth2.Token{AccessToken: strings.TrimSpace(string(token))}
+	defer closeAndCheck(f)
 
-	client := auth.Client(ctx, &oauthToken)
+	var token oauth2.Token
+	decoder := json.NewDecoder(f)
+	err = decoder.Decode(&token)
+	if err != nil {
+		return &spotify.Client{}, err
+	}
+
+	client := auth.Client(ctx, &token)
 	return spotify.New(client), nil
 }
 
@@ -147,7 +157,7 @@ func authenticate(ctx context.Context, cfg config.Config) (*spotify.Client, erro
 
 	log.Printf("Logged as %s", user.ID)
 
-	err = saveToken(result.token.AccessToken)
+	err = saveToken(*result.token)
 	if err != nil {
 		return &spotify.Client{}, err
 	}
