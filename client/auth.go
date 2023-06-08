@@ -157,7 +157,7 @@ func authenticate(ctx context.Context, cfg config.Config) (*spotify.Client, erro
 	}()
 
 	authUrl := auth.AuthURL(state)
-	fmt.Println("Please log in to Spotify by visiting the following page in your browser:", authUrl)
+	fmt.Println("Visit the following page:", authUrl)
 
 	result := <-authResultCh
 	resultErr := result.err
