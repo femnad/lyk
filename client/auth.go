@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"path"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/zmb3/spotify/v2"
@@ -81,6 +82,15 @@ func hasSavedToken() (bool, error) {
 	}
 }
 
+func saveTokenFromClient(client *spotify.Client) error {
+	token, err := client.Token()
+	if err != nil {
+		return fmt.Errorf("error getting token from client: %v", err)
+	}
+
+	return saveToken(*token)
+}
+
 func clientFromSavedToken(ctx context.Context) (*spotify.Client, error) {
 	f, err := os.Open(tokenFile)
 	if err != nil {
@@ -95,8 +105,15 @@ func clientFromSavedToken(ctx context.Context) (*spotify.Client, error) {
 		return &spotify.Client{}, err
 	}
 
-	client := auth.Client(ctx, &token)
-	return spotify.New(client), nil
+	client := spotify.New(auth.Client(ctx, &token))
+	if token.Expiry.Before(time.Now()) {
+		err = saveTokenFromClient(client)
+		if err != nil {
+			return &spotify.Client{}, err
+		}
+	}
+
+	return client, nil
 }
 
 // Mostly derived from https://github.com/zmb3/spotify/blob/master/examples/authenticate/authcode/authenticate.go.
