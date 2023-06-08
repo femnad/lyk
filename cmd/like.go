@@ -3,8 +3,10 @@ package cmd
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/femnad/lyk/client"
+	"github.com/femnad/lyk/notify"
 )
 
 func LikeCurrentSong(ctx context.Context, configFile string) error {
@@ -19,14 +21,21 @@ func LikeCurrentSong(ctx context.Context, configFile string) error {
 	}
 
 	if !current.Playing {
-		return fmt.Errorf("no playback in progress")
+		return sendErrorNotification("No track is playing at the moment")
 	}
 
-	currentId := current.Item.ID
-	err = spotify.AddTracksToLibrary(ctx, currentId)
+	track := current.Item
+	err = spotify.AddTracksToLibrary(ctx, track.ID)
 	if err != nil {
-		return fmt.Errorf("error adding track %s to library: %v", currentId, err)
+		return fmt.Errorf("error adding track %s to library: %v", track.ID, err)
 	}
 
-	return nil
+	var artists []string
+	for _, artist := range track.Artists {
+		artists = append(artists, artist.Name)
+	}
+	artistStr := strings.Join(artists, ",")
+
+	msg := fmt.Sprintf("%s by %s on %s", track.Name, artistStr, track.Album.Name)
+	return notify.Send("Liked Song", msg)
 }

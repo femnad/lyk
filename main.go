@@ -18,7 +18,6 @@ import (
 )
 
 const (
-	name    = "lyk"
 	version = "0.1.0"
 )
 
@@ -27,7 +26,7 @@ type args struct {
 }
 
 func (args) Version() string {
-	return fmt.Sprintf("%s %s", name, version)
+	return fmt.Sprintf("%s %s", cmd.Name, version)
 }
 
 func main() {
