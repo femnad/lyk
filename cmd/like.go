@@ -8,7 +8,7 @@ import (
 	spotifyauth "github.com/zmb3/spotify/v2/auth"
 
 	"github.com/femnad/lyk/notify"
-	spoaut "github.com/femnad/spoaut"
+	"github.com/femnad/spoaut"
 )
 
 const (

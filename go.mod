@@ -5,7 +5,7 @@ go 1.20
 require (
 	github.com/alexflint/go-arg v1.4.3
 	github.com/femnad/mare v0.7.0
-	github.com/femnad/spoaut v0.1.1
+	github.com/femnad/spoaut v0.1.2
 	github.com/zmb3/spotify/v2 v2.3.1
 )
 
