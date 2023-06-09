@@ -50,10 +50,10 @@ github.com/envoyproxy/go-control-plane v0.9.0/go.mod h1:YTl/9mNaCwkRvm6d1a2C3ymF
 github.com/envoyproxy/go-control-plane v0.9.1-0.20191026205805-5f8ba28d4473/go.mod h1:YTl/9mNaCwkRvm6d1a2C3ymFceY/DCBVvsKhRF0iEA4=
 github.com/envoyproxy/go-control-plane v0.9.4/go.mod h1:6rpuAdCZL397s3pYoYcLgu1mIlRU8Am5FuJP05cCM98=
 github.com/envoyproxy/protoc-gen-validate v0.1.0/go.mod h1:iSmxcyjqTsJpI2R4NaDN7+kN2VEUnK/pcBlmesArF7c=
-github.com/femnad/mare v0.5.2 h1:n3dALMibwetsd9Gm8QboFF9fC0D7kBuV2iu7pq5hs1A=
-github.com/femnad/mare v0.5.2/go.mod h1:UyY/VM3sxUOPorXCqe12ahoolTYzbL5+Hxa4924tCYs=
-github.com/femnad/mare v0.6.0 h1:8EZMqQ3Ba5OWWXOTTZrlTLV0L9XjcsBJuUuD1HD/khI=
-github.com/femnad/mare v0.6.0/go.mod h1:6EK4dfMreuFAMMsCwX4dSo3ZUpvqPmKCGO29kpB46fU=
+github.com/femnad/mare v0.7.0 h1:qdSDbd7MM6y0AnMLM8T1k+vU+jYOmTUU5CTDToomGAg=
+github.com/femnad/mare v0.7.0/go.mod h1:6EK4dfMreuFAMMsCwX4dSo3ZUpvqPmKCGO29kpB46fU=
+github.com/femnad/spoaut v0.1.1 h1:68Qe+Ca/vu/vh13I8f8YpECX+NPy8NOrR71B/BtVxgs=
+github.com/femnad/spoaut v0.1.1/go.mod h1:kbJaGpzoOpO36mtX8oDtGWum/F2X4KErSWFkhlCongI=
 github.com/go-gl/glfw v0.0.0-20190409004039-e6da0acd62b1/go.mod h1:vR7hzQXu2zJy9AVAgeJqvqgH9Q5CA+iKCZ2gyEVpxRU=
 github.com/go-gl/glfw/v3.3/glfw v0.0.0-20191125211704-12ad95a8df72/go.mod h1:tQ2UAYgL5IevRw8kRxooKSPJfGvJ9fJQFa0TUsXzTg8=
 github.com/go-gl/glfw/v3.3/glfw v0.0.0-20200222043503-6f7a984d4dc4/go.mod h1:tQ2UAYgL5IevRw8kRxooKSPJfGvJ9fJQFa0TUsXzTg8=

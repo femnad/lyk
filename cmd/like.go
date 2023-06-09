@@ -5,12 +5,33 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/femnad/lyk/client"
+	spotifyauth "github.com/zmb3/spotify/v2/auth"
+
 	"github.com/femnad/lyk/notify"
+	spoaut "github.com/femnad/spoaut"
+)
+
+const (
+	tokenFile = "~/.local/share/lyk/token.json"
+)
+
+var (
+	scopes = []string{
+		// Get current track: https://developer.spotify.com/documentation/web-api/reference/get-the-users-currently-playing-track
+		spotifyauth.ScopeUserReadCurrentlyPlaying,
+		// Save track: https://developer.spotify.com/documentation/web-api/reference/save-tracks-user
+		spotifyauth.ScopeUserLibraryModify,
+	}
 )
 
 func LikeCurrentSong(ctx context.Context, configFile string) error {
-	spotify, err := client.Get(ctx, configFile)
+	cfg := spoaut.Config{
+		ConfigFile: configFile,
+		Scopes:     scopes,
+		TokenFile:  tokenFile,
+	}
+
+	spotify, err := spoaut.Client(ctx, cfg)
 	if err != nil {
 		return err
 	}
