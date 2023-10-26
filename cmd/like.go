@@ -57,6 +57,6 @@ func LikeCurrentSong(ctx context.Context, configFile string) error {
 	}
 	artistStr := strings.Join(artists, ",")
 
-	msg := fmt.Sprintf("%s by %s on %s", track.Name, artistStr, track.Album.Name)
+	msg := fmt.Sprintf("'%s by %s on %s", track.Name, artistStr, track.Album.Name)
 	return notify.Send("Liked Song", msg)
 }
