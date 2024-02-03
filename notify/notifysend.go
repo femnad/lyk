@@ -1,28 +1,39 @@
 package notify
 
 import (
-	"fmt"
-	"strings"
-
-	marecmd "github.com/femnad/mare/cmd"
+	"github.com/esiqveland/notify"
+	"github.com/godbus/dbus/v5"
 )
 
-const executable = "notify-send"
-
-func escapeQuotes(s string) string {
-	return strings.ReplaceAll(s, "'", "\\'")
-}
+const (
+	name = "lyk"
+	icon = "emblem-favorite-symbolic"
+)
 
 func Send(summary, body string) error {
-	summary = escapeQuotes(summary)
-	body = escapeQuotes(body)
-	cmd := fmt.Sprintf("%s '%s' '%s'", executable, summary, body)
-	in := marecmd.Input{Command: cmd}
-
-	_, err := marecmd.RunFormatError(in)
+	conn, err := dbus.SessionBusPrivate()
 	if err != nil {
-		return fmt.Errorf("error sending notification body '%s', summary '%s': %v", summary, body, err)
+		return err
+	}
+	defer conn.Close()
+
+	err = conn.Auth(nil)
+	if err != nil {
+		return err
 	}
 
-	return nil
+	err = conn.Hello()
+	if err != nil {
+		return err
+	}
+
+	n := notify.Notification{
+		AppIcon:       icon,
+		AppName:       name,
+		ExpireTimeout: notify.ExpireTimeoutSetByNotificationServer,
+		Summary:       summary,
+		Body:          body,
+	}
+	_, err = notify.SendNotification(conn, n)
+	return err
 }
